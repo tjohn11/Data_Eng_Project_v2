@@ -109,7 +109,7 @@ def load_data(BC_file, TP_file, create_table_flag):
     conn = dbconnect() 
     if create_table_flag:
         createTables(conn)
-    print("Loading breadcrums into database...")
+    print("Loading breadcrumbs into database...")
     insert_trip(conn, TP_file)
     insert_breadcrumb(conn, BC_file)
     #insert_trip(conn, TP_file)
