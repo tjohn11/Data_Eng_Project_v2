@@ -30,6 +30,7 @@ import time
 from load_insert import load_data
 
 event_csv_file = 'event_data.csv'
+failed_event_file = 'failed_event_data.csv'
 
 # def insertVID(data):
 #     if data['VEHICLE_ID'] in working_data:
@@ -47,65 +48,83 @@ event_csv_file = 'event_data.csv'
 def convert_time(seconds):
     return time.strftime("%H:%M:%S", time.gmtime(int(seconds)))
 
-# def validateData(data, prev_time):
-    # Validations
+def validateData(data):
+#     # Validations
 
-    # DB key DNE assertions
+# #     # DB key DNE assertions
 #     try:
-        assert(data['EVENT_NO_TRIP'] is not '')
+#         assert(data['EVENT_NO_TRIP'] is not '')
+#     except AssertionError:
+#         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
+#         return 1
+#     try:
+#         assert(data['EVENT_NO_STOP'] is not '')
+#     except AssertionError:
+#         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
+#         return 1
+
+
+
+
+    try:
+        assert(data['vehicle_number'] is not '')
     except AssertionError:
         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
         return 1
     try:
-        assert(data['EVENT_NO_STOP'] is not '')
+        assert(data['train'] is not '')
     except AssertionError:
         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
         return 1
     try:
-        assert(data['VEHICLE_ID'] is not '')
+        assert(data['route_number'] is not '')
     except AssertionError:
         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
         return 1
-    try:
-        assert(data['OPD_DATE'] is not '')
-    except AssertionError:
-        # print('***OPD_DATE DNE EXCEPTION AT OPD DATE: %s ***' % data['OPD DATE'])
-        return 1
 
-    # Data corruption assertions
-    try:
-        assert(data['ACT_TIME'] is not '')
-    except AssertionError:
-        # print('***ACT TIME DNE EXCEPTION AT ACT TIME: %s ***' % data['ACT_TIME'])
-        return 1
-    try:
-        assert(int(data['ACT_TIME']) >= prev_time)
-        prev_time = int(data['ACT_TIME'])
-    except AssertionError:
-        # print('***ACT TIME NON-LINEAR EXCEPTION AT ACT TIME: %s ***' % data['ACT_TIME'])
-        return 1
 
-    try:
-        assert(data['DIRECTION'] is not '')
-    except AssertionError:
-        # print('***DIRECTION DNE EXCEPTION AT DIRECTION: %s ***' % data['DIRECTION'])
-        return 1
-    try:
-        assert(int(data['DIRECTION']) >= 0 and int(data['DIRECTION']) <= 359)
-    except AssertionError:
-        # print('***DIRECTION RANGE EXCEPTION AT DIRECTION: %s ***' % data['DIRECTION'])
-        return 1
 
-    try:
-        assert(data['VELOCITY'] is not '')
-    except AssertionError:
-        # print('***VELOCITY DNE EXCEPTION AT VELOCITY: %s ***' % data['VELOCITY'])
-        return 1
-    try:
-        assert(int(data['VELOCITY']) >= 0 and int(data['VELOCITY']) <= 100)
-    except AssertionError:
-        # print('***VELOCITY RANGE EXCEPTION AT VELOCITY: %s ***' % data['VELOCITY'])
-        return 1
+
+#     try:
+#         assert(data['OPD_DATE'] is not '')
+#     except AssertionError:
+#         # print('***OPD_DATE DNE EXCEPTION AT OPD DATE: %s ***' % data['OPD DATE'])
+#         return 1
+
+#     # Data corruption assertions
+#     try:
+#         assert(data['ACT_TIME'] is not '')
+#     except AssertionError:
+#         # print('***ACT TIME DNE EXCEPTION AT ACT TIME: %s ***' % data['ACT_TIME'])
+#         return 1
+#     try:
+#         assert(int(data['ACT_TIME']) >= prev_time)
+#         prev_time = int(data['ACT_TIME'])
+#     except AssertionError:
+#         # print('***ACT TIME NON-LINEAR EXCEPTION AT ACT TIME: %s ***' % data['ACT_TIME'])
+#         return 1
+
+#     try:
+#         assert(data['DIRECTION'] is not '')
+#     except AssertionError:
+#         # print('***DIRECTION DNE EXCEPTION AT DIRECTION: %s ***' % data['DIRECTION'])
+#         return 1
+#     try:
+#         assert(int(data['DIRECTION']) >= 0 and int(data['DIRECTION']) <= 359)
+#     except AssertionError:
+#         # print('***DIRECTION RANGE EXCEPTION AT DIRECTION: %s ***' % data['DIRECTION'])
+#         return 1
+
+#     try:
+#         assert(data['VELOCITY'] is not '')
+#     except AssertionError:
+#         # print('***VELOCITY DNE EXCEPTION AT VELOCITY: %s ***' % data['VELOCITY'])
+#         return 1
+#     try:
+#         assert(int(data['VELOCITY']) >= 0 and int(data['VELOCITY']) <= 100)
+#     except AssertionError:
+#         # print('***VELOCITY RANGE EXCEPTION AT VELOCITY: %s ***' % data['VELOCITY'])
+#         return 1
     return 0 # passed all assertions
 
 
@@ -138,48 +157,73 @@ if __name__ == '__main__':
     # Process messages
     # total_count = 0
     #f = open('consumer_output.json', 'w')
-    breadcrumb_csv = open(BC_file, 'w')
-    trip_csv = open(TP_file, 'w')
-    failed_csv = open('failed_data.csv', 'w')
-    breadcrumb_headers = [
-            'tstamp',
-            'latitude',
-            'longitude',
-            'direction',
-            'speed',
-            'trip_id'
-    ]
-    trip_headers = [
-            'trip_id',
-            'route_id',
-            'vehicle_id',
-            'service_key',
-            'direction'
-    ]
-    failed_headers = [
-            'EVENT_NO_TRIP',
-            'EVENT_NO_STOP',
-            'OPD_DATE',
-            'VEHICLE_ID',
-            'METERS',
-            'ACT_TIME',
-            'VELOCITY',
-            'DIRECTION',
-            'RADIO_QUALITY',
-            'GPS_LONGITUDE',
-            'GPS_LATITUDE',
-            'GPS_SATELLITES',
-            'GPS_HDOP',
-            'SCHEDULE_DEVIATION'
+    event_csv = open(event_csv_file, 'w')
+    failed_csv = open(failed_event_file, 'w')
+    
+    event_headers = [
+        'vehicle_number',
+        'leave_time',
+        'train',
+        'route_number',
+        'direction',
+        'service_key',
+        'stop_time',
+        'arrive_time',
+        'dwell',
+        'location_id',
+        'door',
+        'lift',
+        'ons',
+        'offs',
+        'estimated_load',
+        'maximum_speed',
+        'train_mileage',
+        'pattern_distance',
+        'location_distance',
+        'x_coordinate',
+        'y_coordinate',
+        'data_source',
+        'schedule_status',
+            
     ]
 
+    # breadcrumb_headers = [
+    #         'tstamp',
+    #         'latitude',
+    #         'longitude',
+    #         'direction',
+    #         'speed',
+    #         'trip_id'
+    # ]
+    # trip_headers = [
+    #         'trip_id',
+    #         'route_id',
+    #         'vehicle_id',
+    #         'service_key',
+    #         'direction'
+    # ]
+    # failed_headers = [
+    #         'EVENT_NO_TRIP',
+    #         'EVENT_NO_STOP',
+    #         'OPD_DATE',
+    #         'VEHICLE_ID',
+    #         'METERS',
+    #         'ACT_TIME',
+    #         'VELOCITY',
+    #         'DIRECTION',
+    #         'RADIO_QUALITY',
+    #         'GPS_LONGITUDE',
+    #         'GPS_LATITUDE',
+    #         'GPS_SATELLITES',
+    #         'GPS_HDOP',
+    #         'SCHEDULE_DEVIATION'
+    # ]
+
     try:
-        breadcrumb_writer = csv.DictWriter(breadcrumb_csv, fieldnames=breadcrumb_headers)
-        breadcrumb_writer.writeheader()
-        trip_writer = csv.DictWriter(trip_csv, fieldnames=trip_headers)
-        trip_writer.writeheader()
-        failed_writer = csv.DictWriter(failed_csv, fieldnames=failed_headers)
-        failed_writer.writeheader()
+        event_data_writer = csv.DictWriter(event_csv, fieldnames=event_headers)
+        event_data_writer.writeheader()
+        failed_data_writer = csv.DictWriter(failed_csv, fieldnames=event_headers)
+        failed_data_writer.writeheader()
 
         while True:
             msg = consumer.poll(1.0)
@@ -204,31 +248,31 @@ if __name__ == '__main__':
                 #      and updated total count to {}"
                 #      .format(record_key, record_value, data))
 
-                prev_time = int(data['ACT_TIME'])
-                valid = validateData(data, prev_time)
+                valid = validateData(data)
                 if (valid == 1): # failed an assertion
                     # Output to file
-                    failed_writer.writerow(data)
+                    print(data)
+                    failed_data_writer.writerow(data)
                 
                 else:
-                    bc_dic = {
-                        'tstamp': str(data["OPD_DATE"]) + " " + str(convert_time(data["ACT_TIME"])), 
-                        'latitude': data['GPS_LATITUDE'],
-                        'longitude': data['GPS_LONGITUDE'],
-                        'direction': data['DIRECTION'],
-                        'speed' : data['VELOCITY'],
-                        'trip_id': data['EVENT_NO_TRIP']
-                    }
-                    trip_dic = {
-                        'trip_id': data['EVENT_NO_TRIP'], 
-                        'route_id': data['EVENT_NO_STOP'],
-                        'vehicle_id': data['VEHICLE_ID'],
-                        'service_key': data["OPD_DATE"],
-                        'direction': "Out" 
-                    }
+                    # bc_dic = {
+                    #     'tstamp': str(data["OPD_DATE"]) + " " + str(convert_time(data["ACT_TIME"])), 
+                    #     'latitude': data['GPS_LATITUDE'],
+                    #     'longitude': data['GPS_LONGITUDE'],
+                    #     'direction': data['DIRECTION'],
+                    #     'speed' : data['VELOCITY'],
+                    #     'trip_id': data['EVENT_NO_TRIP']
+                    # }
+                    # trip_dic = {
+                    #     'trip_id': data['EVENT_NO_TRIP'], 
+                    #     'route_id': data['EVENT_NO_STOP'],
+                    #     'vehicle_id': data['VEHICLE_ID'],
+                    #     'service_key': data["OPD_DATE"],
+                    #     'direction': "Out" 
+                    # }
                     # Output to files
-                    breadcrumb_writer.writerow(bc_dic)
-                    trip_writer.writerow(trip_dic) 
+                    print(data)
+                    event_data_writer.writerow(data)
 
                 # f.write(str(data))
                 '''
@@ -245,9 +289,9 @@ if __name__ == '__main__':
     finally:
         # Leave group and commit final offsets
         consumer.close()
-        breadcrumb_csv.close()
-        trip_csv.close()
+        event_csv.close()
         failed_csv.close()
 
         # Load data into the database
-        load_data(BC_file, TP_file, False)
+        # load_data(event_csv_file, False)
+

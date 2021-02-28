@@ -3,7 +3,6 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import ssl
 import re
-import json
 
 def html_to_json():
     # Setup BS object
@@ -48,7 +47,31 @@ def html_to_json():
     # More reformatting
     stop_event_df.rename(columns={'[vehicle_number': 'vehicle_number'}, inplace=True)
     stop_event_df.rename(columns={' schedule_status]': 'schedule_status'}, inplace=True)
+    stop_event_df.rename(columns={' leave_time': 'leave_time'}, inplace=True)
+    stop_event_df.rename(columns={' train': 'train'}, inplace=True)
+    stop_event_df.rename(columns={' route_number': 'route_number'}, inplace=True)
+    stop_event_df.rename(columns={' direction': 'direction'}, inplace=True)
+    stop_event_df.rename(columns={' service_key': 'service_key'}, inplace=True)
+    stop_event_df.rename(columns={' stop_time': 'stop_time'}, inplace=True)
+    stop_event_df.rename(columns={' arrive_time': 'arrive_time'}, inplace=True)
+    stop_event_df.rename(columns={' dwell': 'dwell'}, inplace=True)
+    stop_event_df.rename(columns={' location_id': 'location_id'}, inplace=True)
+    stop_event_df.rename(columns={' door': 'door'}, inplace=True)
+    stop_event_df.rename(columns={' lift': 'lift'}, inplace=True)
+    stop_event_df.rename(columns={' ons': 'ons'}, inplace=True)
+    stop_event_df.rename(columns={' offs': 'offs'}, inplace=True)
+    stop_event_df.rename(columns={' estimated_load': 'estimated_load'}, inplace=True)
+    stop_event_df.rename(columns={' maximum_speed': 'maximum_speed'}, inplace=True)
+    stop_event_df.rename(columns={' train_mileage': 'train_mileage'}, inplace=True)
+    stop_event_df.rename(columns={' pattern_distance': 'pattern_distance'}, inplace=True)
+    stop_event_df.rename(columns={' location_distance': 'location_distance'}, inplace=True)
+    stop_event_df.rename(columns={' x_coordinate': 'x_coordinate'}, inplace=True)
+    stop_event_df.rename(columns={' y_coordinate': 'y_coordinate'}, inplace=True)
+    stop_event_df.rename(columns={' data_source': 'data_source'}, inplace=True)
+    stop_event_df.rename(columns={' schedule_status': 'schedule_status'}, inplace=True)
+
     stop_event_df['vehicle_number'] = stop_event_df['vehicle_number'].str.strip('[')
     stop_event_df['schedule_status'] = stop_event_df['schedule_status'].str.strip(']')
 
     stop_event_df.to_json(r'stop_event.json', orient='records',indent=2)
+
