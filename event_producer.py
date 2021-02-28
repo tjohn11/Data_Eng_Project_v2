@@ -27,13 +27,13 @@ import json
 import ccloud_lib
 import requests
 import urllib.request
+from retrieve_stop_events import html_to_json
 
-url = 'http://rbi.ddns.net/getStopEvents'
-datafile = '/home/shared_dir/assignment_1/examples/clients/cloud/python/event_datafile.json'
-urllib.request.urlretrieve(url,datafile) 
+# Retrieve data and create json file from it
+html_to_json()
+datafile = 'stop_event.json'
 
 slack_uri = 'https://hooks.slack.com/services/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'
-
 
 delivered_records = 0
 # # # Optional per-message on_delivery handler (triggered by poll() or flush())
