@@ -32,38 +32,29 @@ from load_insert import load_data
 event_csv_file = 'event_data.csv'
 failed_event_file = 'failed_event_data.csv'
 
-# def insertVID(data):
-#     if data['VEHICLE_ID'] in working_data:
-#         pass
-#         # Do something
-#     else:
-#         working_data.update({data['VEHICLE_ID']: 
-#             {   
-#                 'ACT_TIME': data['ACT_TIME'],
-#                 'VELOCITY': data['VELOCITY'],
-#                 'DIRECTION': data['DIRECTION'],
-#             }
-#         })
-
-def convert_time(seconds):
-    return time.strftime("%H:%M:%S", time.gmtime(int(seconds)))
-
 def validateData(data):
     # Validations
     try:
+        assert(data['trip_id'] is not '')
+    except AssertionError:
+        # print('***TRIP ID DNE EXCEPTION***)
+        return 1
+    try:
         assert(data['vehicle_number'] is not '')
     except AssertionError:
-        # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
+        # print('***VEHICLE NUMBER DNE EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
         return 1
     try:
-        assert(data['train'] is not '')
+        valid_direction = ['0', '1']
+        assert(data[''] in valid_direction)
     except AssertionError:
-        # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
+        # print('***INVALID DIRECTION EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
         return 1
     try:
-        assert(data['route_number'] is not '')
+        valid_service_key = ['W', 'S', 'U']
+        assert(data[''] in valid_service_key)
     except AssertionError:
-        # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
+        # print('***INVALID SERVICE KEY EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
         return 1
     return 0 # passed all assertions
 
@@ -92,15 +83,19 @@ if __name__ == '__main__':
     # Subscribe to topic
     consumer.subscribe([topic])
 
-    working_data = {}
-
     # Process messages
-    # total_count = 0
-    #f = open('consumer_output.json', 'w')
     event_csv = open(event_csv_file, 'w')
     failed_csv = open(failed_event_file, 'w')
-    
+
     event_headers = [
+        'trip_id',
+        'vehicle_number',
+        'route_number',
+        'direction',
+        'service_key'
+    ]    
+    failed_headers = [
+        'trip_id',
         'vehicle_number',
         'leave_time',
         'train',
@@ -126,27 +121,10 @@ if __name__ == '__main__':
         'schedule_status'
     ]
 
-    # failed_headers = [
-    #         'EVENT_NO_TRIP',
-    #         'EVENT_NO_STOP',
-    #         'OPD_DATE',
-    #         'VEHICLE_ID',
-    #         'METERS',
-    #         'ACT_TIME',
-    #         'VELOCITY',
-    #         'DIRECTION',
-    #         'RADIO_QUALITY',
-    #         'GPS_LONGITUDE',
-    #         'GPS_LATITUDE',
-    #         'GPS_SATELLITES',
-    #         'GPS_HDOP',
-    #         'SCHEDULE_DEVIATION'
-    # ]
-
     try:
         event_data_writer = csv.DictWriter(event_csv, fieldnames=event_headers)
         event_data_writer.writeheader()
-        failed_data_writer = csv.DictWriter(failed_csv, fieldnames=event_headers)
+        failed_data_writer = csv.DictWriter(failed_csv, fieldnames=failed_headers)
         failed_data_writer.writeheader()
 
         while True:
@@ -166,47 +144,22 @@ if __name__ == '__main__':
                 record_value = msg.value()
                 data = json.loads(record_value)
 
-                # count = data['count']
-                # total_count += count
-                # print("Consumed record with key {} and value {}, \
-                #      and updated total count to {}"
-                #      .format(record_key, record_value, data))
-
                 valid = validateData(data)
+
                 if (valid == 1): # failed an assertion
-                    # Output to file
-                    print(data)
+                    # Output to failed data file
                     failed_data_writer.writerow(data)
                 
                 else:
-                    # bc_dic = {
-                    #     'tstamp': str(data["OPD_DATE"]) + " " + str(convert_time(data["ACT_TIME"])), 
-                    #     'latitude': data['GPS_LATITUDE'],
-                    #     'longitude': data['GPS_LONGITUDE'],
-                    #     'direction': data['DIRECTION'],
-                    #     'speed' : data['VELOCITY'],
-                    #     'trip_id': data['EVENT_NO_TRIP']
-                    # }
-                    # trip_dic = {
-                    #     'trip_id': data['EVENT_NO_TRIP'], 
-                    #     'route_id': data['EVENT_NO_STOP'],
-                    #     'vehicle_id': data['VEHICLE_ID'],
-                    #     'service_key': data["OPD_DATE"],
-                    #     'direction': "Out" 
-                    # }
-                    # Output to files
-                    print(data)
-                    event_data_writer.writerow(data)
-
-                # f.write(str(data))
-                '''
-                for key, value in data:
-                    f.write(str(key))
-                    f.write(': ')
-                    f.write(str(value))
-                    f.write(',\n')
-                f.write('\n\n')
-                '''
+                    # Output to valid data file
+                    to_write_data = {
+                        'trip_id': data['trip_id'],
+                        'vehicle_number': data['vehicle_number'],
+                        'route_number': data['route_number'],
+                        'direction': data['direction'],
+                        'service_key': data['service_key'],
+                    }
+                    event_data_writer.writerow(to_write_data)
 
     except (KeyboardInterrupt, IOError):
         pass

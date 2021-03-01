@@ -63,37 +63,23 @@ def html_to_json():
     stop_event_df = stop_event_df.rename(columns=stop_event_df.iloc[0])
     stop_event_df = stop_event_df.drop(stop_event_df.index[0])
 
-    # More reformatting
-    stop_event_df.rename(columns={' trip_id': 'trip_id'}, inplace=True)
-    stop_event_df.rename(columns={'[vehicle_number': 'vehicle_number'}, inplace=True)
-    stop_event_df.rename(columns={' schedule_status]': 'schedule_status'}, inplace=True)
-    stop_event_df.rename(columns={' leave_time': 'leave_time'}, inplace=True)
-    stop_event_df.rename(columns={' train': 'train'}, inplace=True)
-    stop_event_df.rename(columns={' route_number': 'route_number'}, inplace=True)
-    stop_event_df.rename(columns={' direction': 'direction'}, inplace=True)
-    stop_event_df.rename(columns={' service_key': 'service_key'}, inplace=True)
-    stop_event_df.rename(columns={' stop_time': 'stop_time'}, inplace=True)
-    stop_event_df.rename(columns={' arrive_time': 'arrive_time'}, inplace=True)
-    stop_event_df.rename(columns={' dwell': 'dwell'}, inplace=True)
-    stop_event_df.rename(columns={' location_id': 'location_id'}, inplace=True)
-    stop_event_df.rename(columns={' door': 'door'}, inplace=True)
-    stop_event_df.rename(columns={' lift': 'lift'}, inplace=True)
-    stop_event_df.rename(columns={' ons': 'ons'}, inplace=True)
-    stop_event_df.rename(columns={' offs': 'offs'}, inplace=True)
-    stop_event_df.rename(columns={' estimated_load': 'estimated_load'}, inplace=True)
-    stop_event_df.rename(columns={' maximum_speed': 'maximum_speed'}, inplace=True)
-    stop_event_df.rename(columns={' train_mileage': 'train_mileage'}, inplace=True)
-    stop_event_df.rename(columns={' pattern_distance': 'pattern_distance'}, inplace=True)
-    stop_event_df.rename(columns={' location_distance': 'location_distance'}, inplace=True)
-    stop_event_df.rename(columns={' x_coordinate': 'x_coordinate'}, inplace=True)
-    stop_event_df.rename(columns={' y_coordinate': 'y_coordinate'}, inplace=True)
-    stop_event_df.rename(columns={' data_source': 'data_source'}, inplace=True)
-    stop_event_df.rename(columns={' schedule_status': 'schedule_status'}, inplace=True)
+    # for column in stop_event_df.columns:
+    #     print(type(column))
+    #     if '[' in column:
+    #         # stop_event_df.rename(columns=column.str.strip('['), inplace=True)
+    #         stop_event_df.columns[column]
+    #     if ']' in column:
+    #         stop_event_df.rename(columns=column.str.strip(']'), inplace=True)
+    #     if ' ' in column:
+    #         stop_event_df.rename(columns=column.strip(' '), inplace=True)
+        
+    #     print('**%s**', column)
 
-    stop_event_df['vehicle_number'] = stop_event_df['vehicle_number'].str.strip('[')
-    stop_event_df['schedule_status'] = stop_event_df['schedule_status'].str.strip(']')
-    stop_event_df['direction'] = stop_event_df['direction'].str.strip(' ')
-    stop_event_df['service_key'] = stop_event_df['service_key'].str.strip(' ')
+    stop_event_df.columns = [
+        'trip_id', 'vehicle_number', 'leave_time', 'train', 'route_number', 'direction',
+        'service_key', 'stop_time', 'arrive_time', 'dwell', 'location_id', 'door', 'lift', 'ons',
+        'offs', 'estimated_load', 'maximum_speed', 'train_mileage', 'pattern_distance',
+        'location_distance', 'x_coordinate', 'y_coordinate', 'data_source', 'schedule_status'
+    ]
 
     stop_event_df.to_json(r'stop_event.json', orient='records',indent=2)
-
