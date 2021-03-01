@@ -49,23 +49,7 @@ def convert_time(seconds):
     return time.strftime("%H:%M:%S", time.gmtime(int(seconds)))
 
 def validateData(data):
-#     # Validations
-
-# #     # DB key DNE assertions
-#     try:
-#         assert(data['EVENT_NO_TRIP'] is not '')
-#     except AssertionError:
-#         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
-#         return 1
-#     try:
-#         assert(data['EVENT_NO_STOP'] is not '')
-#     except AssertionError:
-#         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
-#         return 1
-
-
-
-
+    # Validations
     try:
         assert(data['vehicle_number'] is not '')
     except AssertionError:
@@ -81,50 +65,6 @@ def validateData(data):
     except AssertionError:
         # print('***VEHICLE ID DNE EXCEPTION AT VEHICLE ID: %s ***' % data['VEHICLE_ID'])
         return 1
-
-
-
-
-#     try:
-#         assert(data['OPD_DATE'] is not '')
-#     except AssertionError:
-#         # print('***OPD_DATE DNE EXCEPTION AT OPD DATE: %s ***' % data['OPD DATE'])
-#         return 1
-
-#     # Data corruption assertions
-#     try:
-#         assert(data['ACT_TIME'] is not '')
-#     except AssertionError:
-#         # print('***ACT TIME DNE EXCEPTION AT ACT TIME: %s ***' % data['ACT_TIME'])
-#         return 1
-#     try:
-#         assert(int(data['ACT_TIME']) >= prev_time)
-#         prev_time = int(data['ACT_TIME'])
-#     except AssertionError:
-#         # print('***ACT TIME NON-LINEAR EXCEPTION AT ACT TIME: %s ***' % data['ACT_TIME'])
-#         return 1
-
-#     try:
-#         assert(data['DIRECTION'] is not '')
-#     except AssertionError:
-#         # print('***DIRECTION DNE EXCEPTION AT DIRECTION: %s ***' % data['DIRECTION'])
-#         return 1
-#     try:
-#         assert(int(data['DIRECTION']) >= 0 and int(data['DIRECTION']) <= 359)
-#     except AssertionError:
-#         # print('***DIRECTION RANGE EXCEPTION AT DIRECTION: %s ***' % data['DIRECTION'])
-#         return 1
-
-#     try:
-#         assert(data['VELOCITY'] is not '')
-#     except AssertionError:
-#         # print('***VELOCITY DNE EXCEPTION AT VELOCITY: %s ***' % data['VELOCITY'])
-#         return 1
-#     try:
-#         assert(int(data['VELOCITY']) >= 0 and int(data['VELOCITY']) <= 100)
-#     except AssertionError:
-#         # print('***VELOCITY RANGE EXCEPTION AT VELOCITY: %s ***' % data['VELOCITY'])
-#         return 1
     return 0 # passed all assertions
 
 
@@ -183,25 +123,9 @@ if __name__ == '__main__':
         'x_coordinate',
         'y_coordinate',
         'data_source',
-        'schedule_status',
-            
+        'schedule_status'
     ]
 
-    # breadcrumb_headers = [
-    #         'tstamp',
-    #         'latitude',
-    #         'longitude',
-    #         'direction',
-    #         'speed',
-    #         'trip_id'
-    # ]
-    # trip_headers = [
-    #         'trip_id',
-    #         'route_id',
-    #         'vehicle_id',
-    #         'service_key',
-    #         'direction'
-    # ]
     # failed_headers = [
     #         'EVENT_NO_TRIP',
     #         'EVENT_NO_STOP',

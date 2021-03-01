@@ -105,15 +105,28 @@ def insert_trip (conn, filename):
                 cur.execute("INSERT INTO trip VALUES (%s,%s,%s,%s,%s)", (trip_id, route_id, vehicle_id, service_key, direction))
     conn.commit()
 
-def load_data(BC_file, TP_file, create_table_flag):
+def insert_event (conn, filename):
+    cur = conn.cursor()
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        next(reader) # skip the header row
+        for row in reader:
+            trip_id = int(row[0])
+
+
+
+def load_data (BC_file, TP_file, create_table_flag):
     conn = dbconnect() 
-    if create_table_flag:
-        createTables(conn)
+#    if create_table_flag:
+#        createTables(conn)
     print("Loading breadcrumbs into database...")
     insert_trip(conn, TP_file)
     insert_breadcrumb(conn, BC_file)
     #insert_trip(conn, TP_file)
 
-
+def load_event_dat (EV_file):
+    conn = dbconnect() 
+    print("Loading stop event data into database...")
+    insert_event(conn, EV_file)
 
 
