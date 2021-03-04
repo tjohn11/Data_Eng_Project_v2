@@ -84,8 +84,8 @@ if __name__ == '__main__':
 
         crumb_count = 0
         for record in data:
-            if crumb_count > 1000:
-                break
+            # if crumb_count > 1000:
+            #     break
             record_key = 'stop_event'
             record_value = record
             json_data = json.dumps(record_value)

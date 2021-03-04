@@ -81,5 +81,30 @@ def html_to_json():
         'offs', 'estimated_load', 'maximum_speed', 'train_mileage', 'pattern_distance',
         'location_distance', 'x_coordinate', 'y_coordinate', 'data_source', 'schedule_status'
     ]
+    stop_event_df['vehicle_number'] = stop_event_df['vehicle_number'].str.strip('[')
+    stop_event_df['schedule_status'] = stop_event_df['schedule_status'].str.strip(']')
+
+    stop_event_df['leave_time'] = stop_event_df['leave_time'].str.strip(' ')
+    stop_event_df['train'] = stop_event_df['train'].str.strip(' ')
+    stop_event_df['route_number'] = stop_event_df['route_number'].str.strip(' ')
+    stop_event_df['direction'] = stop_event_df['direction'].str.strip(' ')
+    stop_event_df['service_key'] = stop_event_df['service_key'].str.strip(' ')
+    stop_event_df['stop_time'] = stop_event_df['stop_time'].str.strip(' ')
+    stop_event_df['arrive_time'] = stop_event_df['arrive_time'].str.strip(' ')
+    stop_event_df['dwell'] = stop_event_df['dwell'].str.strip(' ')
+    stop_event_df['location_id'] = stop_event_df['location_id'].str.strip(' ')
+    stop_event_df['door'] = stop_event_df['door'].str.strip(' ')
+    stop_event_df['lift'] = stop_event_df['lift'].str.strip(' ')
+    stop_event_df['ons'] = stop_event_df['ons'].str.strip(' ')
+    stop_event_df['offs'] = stop_event_df['offs'].str.strip(' ')
+    stop_event_df['estimated_load'] = stop_event_df['estimated_load'].str.strip(' ')
+    stop_event_df['maximum_speed'] = stop_event_df['maximum_speed'].str.strip(' ')
+    stop_event_df['train_mileage'] = stop_event_df['train_mileage'].str.strip(' ')
+    stop_event_df['pattern_distance'] = stop_event_df['pattern_distance'].str.strip(' ')
+    stop_event_df['location_distance'] = stop_event_df['location_distance'].str.strip(' ')
+    stop_event_df['x_coordinate'] = stop_event_df['x_coordinate'].str.strip(' ')
+    stop_event_df['y_coordinate'] = stop_event_df['y_coordinate'].str.strip(' ')
+    stop_event_df['data_source'] = stop_event_df['data_source'].str.strip(' ')
+    stop_event_df['schedule_status'] = stop_event_df['schedule_status'].str.strip(' ')
 
     stop_event_df.to_json(r'stop_event.json', orient='records',indent=2)

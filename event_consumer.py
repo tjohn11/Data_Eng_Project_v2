@@ -27,7 +27,7 @@ import json
 import ccloud_lib
 import csv
 import time
-from load_insert import load_data
+from load_insert import load_event_data
 
 event_csv_file = 'event_data.csv'
 failed_event_file = 'failed_event_data.csv'
@@ -37,25 +37,26 @@ def validateData(data):
     try:
         assert(data['trip_id'] is not '')
     except AssertionError:
-        # print('***TRIP ID DNE EXCEPTION***)
+        print('***TRIP ID DNE EXCEPTION***')
         return 1
     try:
         assert(data['vehicle_number'] is not '')
     except AssertionError:
-        # print('***VEHICLE NUMBER DNE EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
+        print('***VEHICLE NUMBER DNE EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
         return 1
     try:
         valid_direction = ['0', '1']
-        assert(data[''] in valid_direction)
+        assert(data['direction'] in valid_direction)
     except AssertionError:
-        # print('***INVALID DIRECTION EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
+        print('***INVALID DIRECTION EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
         return 1
     try:
         valid_service_key = ['W', 'S', 'U']
-        assert(data[''] in valid_service_key)
+        assert(data['service_key'] in valid_service_key)
     except AssertionError:
-        # print('***INVALID SERVICE KEY EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
+        print('***INVALID SERVICE KEY EXCEPTION AT TRIP ID: %s ***' % data['trip_id'])
         return 1
+
     return 0 # passed all assertions
 
 
@@ -160,6 +161,7 @@ if __name__ == '__main__':
                         'service_key': data['service_key'],
                     }
                     event_data_writer.writerow(to_write_data)
+                    print(to_write_data)
 
     except (KeyboardInterrupt, IOError):
         pass
@@ -170,5 +172,5 @@ if __name__ == '__main__':
         failed_csv.close()
 
         # Load data into the database
-        # load_data(event_csv_file, False)
+        load_event_data(event_csv_file)
 

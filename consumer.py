@@ -222,7 +222,7 @@ if __name__ == '__main__':
                     }
                     trip_dic = {
                         'trip_id': data['EVENT_NO_TRIP'], 
-                        'route_id': data['EVENT_NO_STOP'],
+                        'route_id': "0",
                         'vehicle_id': data['VEHICLE_ID'],
                         'service_key': data["OPD_DATE"],
                         'direction': "Out" 
